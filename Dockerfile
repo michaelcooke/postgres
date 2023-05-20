@@ -301,6 +301,10 @@ ADD --checksum=${timescaledb_release_checksum} \
     /tmp/timescaledb.tar.gz
 RUN tar -xvf /tmp/timescaledb.tar.gz -C /tmp && \
     rm -rf /tmp/timescaledb.tar.gz
+# Install build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libkrb5-dev \
+    && rm -rf /var/lib/apt/lists/*
 # Build from source
 WORKDIR /tmp/timescaledb-${timescaledb_release}/build
 RUN cmake ..
