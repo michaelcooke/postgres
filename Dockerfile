@@ -824,17 +824,3 @@ ENV POSTGRES_INITDB_ARGS=--lc-ctype=C.UTF-8
 CMD ["postgres", "-D", "/etc/postgresql"]
 
 HEALTHCHECK --interval=2s --timeout=2s --retries=10 CMD pg_isready -U postgres -h localhost
-
-####################
-# Update build cache
-####################
-FROM ccache as stats
-COPY --from=extensions /tmp/*.deb /dev/null
-# Additional packages that are separately built from source
-# COPY --from=plv8-deb /tmp/*.deb /dev/null
-# Cache mount is only populated by docker build --no-cache
-RUN --mount=type=cache,target=/ccache,from=public.ecr.aws/supabase/postgres:ccache \
-    ccache -s && \
-    cp -r /ccache/* /tmp
-FROM scratch as buildcache
-COPY --from=stats /tmp /
