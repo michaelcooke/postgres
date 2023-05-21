@@ -794,16 +794,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/* /tmp/*
 
 # Initialise configs
-COPY --chown=postgres:postgres ansible/files/postgresql_config/postgresql.conf.j2 /etc/postgresql/postgresql.conf
-COPY --chown=postgres:postgres ansible/files/postgresql_config/pg_hba.conf.j2 /etc/postgresql/pg_hba.conf
-COPY --chown=postgres:postgres ansible/files/postgresql_config/pg_ident.conf.j2 /etc/postgresql/pg_ident.conf
-COPY --chown=postgres:postgres ansible/files/postgresql_config/postgresql-stdout-log.conf /etc/postgresql/logging.conf
-COPY --chown=postgres:postgres ansible/files/postgresql_config/supautils.conf.j2 /etc/postgresql-custom/supautils.conf
-COPY --chown=postgres:postgres ansible/files/postgresql_extension_custom_scripts /etc/postgresql-custom/extension-custom-scripts
-COPY --chown=postgres:postgres ansible/files/pgsodium_getkey_urandom.sh.j2 /usr/lib/postgresql/${postgresql_major}/bin/pgsodium_getkey.sh
-COPY --chown=postgres:postgres ansible/files/postgresql_config/custom_walg.conf.j2 /etc/postgresql-custom/wal-g.conf
-COPY --chown=postgres:postgres ansible/files/walg_helper_scripts/wal_fetch.sh /home/postgres/wal_fetch.sh
-COPY ansible/files/walg_helper_scripts/wal_change_ownership.sh /root/wal_change_ownership.sh
+COPY --chown=postgres:postgres files/postgresql_config/postgresql.conf.j2 /etc/postgresql/postgresql.conf
+COPY --chown=postgres:postgres files/postgresql_config/pg_hba.conf.j2 /etc/postgresql/pg_hba.conf
+COPY --chown=postgres:postgres files/postgresql_config/pg_ident.conf.j2 /etc/postgresql/pg_ident.conf
+COPY --chown=postgres:postgres files/postgresql_config/postgresql-stdout-log.conf /etc/postgresql/logging.conf
+COPY --chown=postgres:postgres files/postgresql_config/supautils.conf.j2 /etc/postgresql-custom/supautils.conf
+COPY --chown=postgres:postgres files/postgresql_extension_custom_scripts /etc/postgresql-custom/extension-custom-scripts
+COPY --chown=postgres:postgres files/pgsodium_getkey_urandom.sh.j2 /usr/lib/postgresql/${postgresql_major}/bin/pgsodium_getkey.sh
+COPY --chown=postgres:postgres files/postgresql_config/custom_walg.conf.j2 /etc/postgresql-custom/wal-g.conf
+COPY --chown=postgres:postgres files/walg_helper_scripts/wal_fetch.sh /home/postgres/wal_fetch.sh
+COPY files/walg_helper_scripts/wal_change_ownership.sh /root/wal_change_ownership.sh
 
 RUN sed -i "s/#unix_socket_directories = '\/tmp'/unix_socket_directories = '\/var\/run\/postgresql'/g" /etc/postgresql/postgresql.conf && \
     sed -i "s/#session_preload_libraries = ''/session_preload_libraries = 'supautils'/g" /etc/postgresql/postgresql.conf && \
@@ -819,8 +819,8 @@ RUN sed -i "s/#unix_socket_directories = '\/tmp'/unix_socket_directories = '\/va
 
 # Include schema migrations
 COPY migrations/db /docker-entrypoint-initdb.d/
-COPY ansible/files/pgbouncer_config/pgbouncer_auth_schema.sql /docker-entrypoint-initdb.d/init-scripts/00-schema.sql
-COPY ansible/files/stat_extension.sql /docker-entrypoint-initdb.d/migrations/00-extension.sql
+COPY files/pgbouncer_config/pgbouncer_auth_schema.sql /docker-entrypoint-initdb.d/init-scripts/00-schema.sql
+COPY files/stat_extension.sql /docker-entrypoint-initdb.d/migrations/00-extension.sql
 
 # Setup default host and locale
 ENV POSTGRES_HOST=/var/run/postgresql
